@@ -54,20 +54,25 @@ cookie: true,
 xfbml: true,
 version: 'v3.2'
 })
-FB.getLoginStatus(console.log)
-if(window.relogin) FB.login(function(response){location.reload()})
-//FB.api('/me',response=>alert(response.name))
+}
+
+function logout(){
+FB.getLoginStatus(function(ls){
+if(ls.status!='connected') return
+console.log('logout')
+FB.logout(function(response){location.reload()})
+})
 }
 </script>
 <script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
-<?php
-$relogin_cases=['Graph returned an error: This authorization code has expired.',
-'Graph returned an error: This authorization code has been used.'];
-$relogin=in_array($produced[0],$relogin_cases)?'true':'false';
+<?php $action=$produced[1]?'logout':'login';
+if($action=='login'){
 ?>
-<script>relogin=<?=$relogin?></script>
-<?php $action=$produced[1]?'logout':'login'; ?>
-<button onclick="FB.<?=$action?>(function(response){location.reload()})"><?=$action?></button>
+<button onclick="FB.login(function(response){location.reload()})">login</button>
+<?php }else if($action=='logout'){ ?>
+<button onclick="logout()">logout</button>
+<?php } ?>
+
 <?php if($_SESSION['username']!=''){?>
 <a href="/php_http/chat/">chat as: <?=$_SESSION['username']?></a>
 <?php }?>
