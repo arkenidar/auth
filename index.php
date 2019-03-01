@@ -11,7 +11,7 @@ require 'app_settings.php';
 $fb = new \Facebook\Facebook([
   'app_id' => $app_id,
   'app_secret' => $app_secret,
-  'default_graph_version' => 'v2.10',
+  'default_graph_version' => 'v3.2',
 ]);
 //////////////////////////////////////////////////
 // https://developers.facebook.com/docs/php/howto/example_access_token_from_javascript/
@@ -46,6 +46,8 @@ $produced = fb();
 <!DOCTYPE html><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Facebook Login in JS+PHP</title>
+
+<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
 <script>
 function fbAsyncInit(){
 FB.init({
@@ -63,15 +65,13 @@ console.log('logout')
 FB.logout(function(response){location.reload()})
 })
 }
+
+function login(){
+FB.login(function(response){location.reload()})
+}
 </script>
-<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
-<?php $action=$produced[1]?'logout':'login';
-if($action=='login'){
-?>
-<button onclick="FB.login(function(response){location.reload()})">login</button>
-<?php }else if($action=='logout'){ ?>
-<button onclick="logout()">logout</button>
-<?php } ?>
+<?php $action=$produced[1]?'logout':'login';?>
+<button onclick="<?=$action?>()"><?=$action?></button>
 
 <?php if($_SESSION['username']!=''){?>
 <a href="/php_http/chat/">chat as: <?=$_SESSION['username']?></a>
